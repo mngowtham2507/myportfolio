@@ -90,15 +90,14 @@ function initNavLinkScrolling() {
  * Reveal elements when they come into view
  */
 function revealOnScroll() {
-    const reveals = document.querySelectorAll('.project-card, .skill-category, .highlight-item');
+    const reveals = document.querySelectorAll('.reveal');
     
     reveals.forEach(element => {
         const elementTop = element.getBoundingClientRect().top;
         const elementVisible = 150;
         
         if (elementTop < window.innerHeight - elementVisible) {
-            element.style.opacity = '1';
-            element.style.transform = 'translateY(0)';
+            element.classList.add('is-visible');
         }
     });
 }
@@ -108,11 +107,30 @@ function revealOnScroll() {
  */
 function initScrollReveal() {
     const reveals = document.querySelectorAll('.project-card, .skill-category, .highlight-item');
-    
+
     reveals.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(30px)';
-        element.style.transition = 'all 0.6s ease-out';
+        element.classList.add('reveal');
+    });
+
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: '0px 0px -80px 0px'
+        });
+
+        reveals.forEach(element => observer.observe(element));
+        return;
+    }
+
+    reveals.forEach(element => {
+        element.classList.add('is-visible');
     });
 }
 
@@ -248,57 +266,34 @@ function initScrollToTop() {
  * Create animated particles in the hero background
  */
 function createParticles() {
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
-    
-    const particlesContainer = document.createElement('div');
-    particlesContainer.className = 'particles';
-    particlesContainer.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        pointer-events: none;
-    `;
-    
-    // Create 50 particles
-    for (let i = 0; i < 50; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: rgba(139, 92, 246, 0.5);
-            border-radius: 50%;
-            top: ${Math.random() * 100}%;
-            left: ${Math.random() * 100}%;
-            animation: float ${5 + Math.random() * 10}s infinite ease-in-out;
-            animation-delay: ${Math.random() * 5}s;
-        `;
-        particlesContainer.appendChild(particle);
+    if (document.querySelector('.blue-dots-bg')) return;
+
+    const dotsLayer = document.createElement('div');
+    dotsLayer.className = 'blue-dots-bg';
+
+    const dotCount = 40;
+
+    for (let index = 0; index < dotCount; index++) {
+        const dot = document.createElement('span');
+        const size = 2 + Math.random() * 4;
+        const left = Math.random() * 100;
+        const top = Math.random() * 100;
+        const duration = 8 + Math.random() * 8;
+        const delay = Math.random() * -duration;
+        const drift = `${Math.random() * 160 - 80}px`;
+
+        dot.className = 'blue-dot';
+        dot.style.setProperty('--dot-size', `${size}px`);
+        dot.style.setProperty('--dot-left', `${left}%`);
+        dot.style.setProperty('--dot-top', `${top}%`);
+        dot.style.setProperty('--dot-duration', `${duration}s`);
+        dot.style.setProperty('--dot-delay', `${delay}s`);
+        dot.style.setProperty('--dot-drift', drift);
+
+        dotsLayer.appendChild(dot);
     }
-    
-    hero.appendChild(particlesContainer);
-    
-    // Add animation keyframes
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(${Math.random() * 100 - 50}px);
-            }
-        }
-    `;
-    document.head.appendChild(style);
+
+    document.body.insertBefore(dotsLayer, document.body.firstChild);
 }
 
 // ===============================================
@@ -308,6 +303,7 @@ function createParticles() {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize navigation
     initNavLinkScrolling();
+    initMobileMenu();
     
     // Initialize scroll effects
     initScrollReveal();
@@ -392,5 +388,4 @@ function initMobileMenu() {
     handleMobile(mediaQuery);
 }
 
-// Initialize mobile menu
-window.addEventListener('load', initMobileMenu);
+

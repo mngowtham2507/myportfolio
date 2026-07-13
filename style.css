@@ -24,8 +24,8 @@
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
     --spacing-md: 2rem;
-    --spacing-lg: 4rem;
-    --spacing-xl: 6rem;
+    --spacing-lg: 3rem;
+    --spacing-xl: 4rem;
     
     /* Typography */
     --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -41,11 +41,43 @@ html {
 }
 
 body {
+    position: relative;
     font-family: var(--font-primary);
     background-color: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
+}
+
+body > .navbar,
+body > .hero,
+body > .section,
+body > .footer {
+    position: relative;
+    z-index: 1;
+}
+
+.blue-dots-bg {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.blue-dot {
+    position: absolute;
+    left: var(--dot-left);
+    top: var(--dot-top);
+    width: var(--dot-size);
+    height: var(--dot-size);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(96, 165, 250, 0.95) 0%, rgba(59, 130, 246, 0.7) 40%, rgba(37, 99, 235, 0.08) 75%, transparent 100%);
+    box-shadow: 0 0 18px rgba(59, 130, 246, 0.35);
+    opacity: 0;
+    animation: dotRise var(--dot-duration) linear infinite;
+    animation-delay: var(--dot-delay);
+    will-change: transform, opacity;
 }
 
 /* ===============================================
@@ -129,12 +161,12 @@ body {
    =============================================== */
 
 .hero {
-    min-height: 100vh;
+    min-height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: var(--spacing-lg) var(--spacing-md);
+    padding: calc(var(--spacing-xl) + 72px) var(--spacing-md) var(--spacing-lg);
     overflow: hidden;
 }
 
@@ -155,10 +187,30 @@ body {
     z-index: 1;
 }
 
+.hero-content > * {
+    animation: fadeInUp 0.8s ease-out both;
+}
+
+.hero-content > *:nth-child(1) {
+    animation-delay: 0.08s;
+}
+
+.hero-content > *:nth-child(2) {
+    animation-delay: 0.18s;
+}
+
+.hero-content > *:nth-child(3) {
+    animation-delay: 0.28s;
+}
+
+.hero-content > *:nth-child(4) {
+    animation-delay: 0.38s;
+}
+
 .hero-title {
     font-size: clamp(2.5rem, 8vw, 5rem);
     font-weight: 800;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 0.75rem;
     line-height: 1.1;
 }
 
@@ -173,13 +225,13 @@ body {
     font-size: clamp(1.5rem, 4vw, 2.5rem);
     font-weight: 600;
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 1rem;
 }
 
 .hero-tagline {
     font-size: clamp(1rem, 2vw, 1.25rem);
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 2rem;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
@@ -235,7 +287,7 @@ body {
    =============================================== */
 
 .section {
-    padding: var(--spacing-xl) var(--spacing-md);
+    padding: var(--spacing-lg) var(--spacing-md);
 }
 
 .container {
@@ -247,7 +299,7 @@ body {
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 700;
     text-align: center;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 2rem;
     position: relative;
 }
 
@@ -259,6 +311,17 @@ body {
     background: var(--accent-gradient);
     margin: var(--spacing-sm) auto 0;
     border-radius: 2px;
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 /* ===============================================
@@ -277,7 +340,7 @@ body {
 .about-text {
     font-size: 1.125rem;
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 2rem;
     text-align: center;
     line-height: 1.8;
 }
@@ -322,7 +385,7 @@ body {
 .skills-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
     max-width: 1000px;
     margin: 0 auto;
 }
@@ -388,7 +451,7 @@ body {
 .project-card {
     background: var(--bg-card);
     border-radius: 12px;
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
     border: 1px solid var(--border-color);
     transition: all var(--transition-normal);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -400,6 +463,12 @@ body {
     transform: translateY(-10px);
     border-color: var(--accent-primary);
     box-shadow: 0 12px 40px rgba(139, 92, 246, 0.2);
+}
+
+.highlight-item,
+.skill-category,
+.project-card {
+    will-change: transform, opacity;
 }
 
 .project-header {
@@ -487,12 +556,12 @@ body {
 .contact-text {
     font-size: 1.125rem;
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 2rem;
     line-height: 1.8;
 }
 
 .contact-info {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 2rem;
 }
 
 .contact-item {
@@ -568,8 +637,8 @@ body {
 
 @media (max-width: 768px) {
     :root {
-        --spacing-lg: 3rem;
-        --spacing-xl: 4rem;
+        --spacing-lg: 2.5rem;
+        --spacing-xl: 3.25rem;
     }
     
     .nav-menu {
@@ -581,8 +650,8 @@ body {
     }
     
     .hero {
-        min-height: 90vh;
-        padding: var(--spacing-md);
+        min-height: auto;
+        padding: calc(var(--spacing-lg) + 72px) var(--spacing-md) var(--spacing-lg);
     }
     
     .hero-buttons {
@@ -625,7 +694,7 @@ body {
     }
     
     .section {
-        padding: var(--spacing-lg) var(--spacing-sm);
+        padding: 2.5rem var(--spacing-sm);
     }
 }
 
@@ -641,6 +710,23 @@ body {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes dotRise {
+    0% {
+        transform: translate3d(0, 18vh, 0) scale(0.75);
+        opacity: 0;
+    }
+    12% {
+        opacity: 0.85;
+    }
+    50% {
+        opacity: 0.55;
+    }
+    100% {
+        transform: translate3d(var(--dot-drift), -120vh, 0) scale(1.15);
+        opacity: 0;
     }
 }
 
@@ -662,4 +748,22 @@ body {
 
 .hero-buttons {
     animation-delay: 0.4s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .blue-dot,
+    .hero-content > *,
+    .reveal,
+    .project-card,
+    .skill-category,
+    .highlight-item {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
 }
